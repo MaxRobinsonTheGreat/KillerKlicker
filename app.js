@@ -16,4 +16,9 @@ app.get('/', function(req, res, next) {
     res.sendFile(__dirname + '/index.html');
 });
 
-server.listen(4200);
+app.post('/click', function(req, res, next) {
+    res.send("hello");
+});
+
+server.listen(8080);
+console.log("Server is listening...")
