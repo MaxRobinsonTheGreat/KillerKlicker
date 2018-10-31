@@ -8,6 +8,32 @@ var pointerY = 0;
 var tap = ('ontouchstart' in window || navigator.msMaxTouchPoints) ? 'touchstart' : 'mousedown';
 var colors = ['#FF1461'];
 
+var socket = io.connect({ query: "username="+Math.random()+"" });
+
+socket.on('connect', function(data) {
+   console.log("hello")
+});
+
+socket.on('new-user', function(data) {
+  // a user has been added, data = {username, color}
+   console.log(data.username)
+});
+
+socket.on('update-clicks', function(data) {
+  // a click has occured, data = {username, total clicks}
+   console.log(data)
+});
+
+socket.on('you-died', function() {
+  // refresh the page
+   console.log(dead_user)
+});
+
+socket.on('user-died', function(dead_user) {
+  // remove the player
+   console.log(dead_user)
+});
+
 function setCanvasSize() {
   canvasEl.width = window.innerWidth * 2;
   canvasEl.height = window.innerHeight * 2;
@@ -120,6 +146,7 @@ document.addEventListener(tap, function(e) {
   render.play();
   updateCoords(e);
   animateParticules(pointerX, pointerY);
+  socket.emit('click', "replace me with the clicked username")
 }, false);
 
 var centerX = window.innerWidth / 2;
