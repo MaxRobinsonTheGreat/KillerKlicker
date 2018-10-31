@@ -1,14 +1,42 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="/main.css">
-        <script src="script.js"></script>
-    </head>
-    
-    <body>
-        
-        <h1>Nuibi</h1>
-        
-    
-    </body>
+
+<head>
+
+
+</head>
+
+<body>
+
+    <canvas class="fireworks">
+            
+            
+            
+            
+            
+            
+            
+            
+        </canvas>
+
+
+    <script src="script.js"></script>
+    <script src="anime.min.js"></script>
+    <script src="fireworks.js"></script>
+
+    <script>
+        var canvasEl = document.querySelector('.fireworks');
+        var ctx = canvasEl.getContext('2d');
+        console.log("start drawing");
+        ctx.beginPath();
+        ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+        ctx.fillStyle = 'green';
+        ctx.fill();
+    </script>
+
+</body>
+
+
+
+
 </html>
