@@ -6,7 +6,12 @@ var numberOfParticules = 30;
 var pointerX = 0;
 var pointerY = 0;
 var tap = ('ontouchstart' in window || navigator.msMaxTouchPoints) ? 'touchstart' : 'mousedown';
-var colors = ['#FF1461'];
+var colors = "#FF1461";
+
+var circle = [{ name: "Name", color: "#FF1461", cx: 50, cy: 50, cr: 100 }, { name: "Name", color: "#83D0E5", cx: 450, cy: 550, cr: 50 }];
+//function createPlayer() {
+
+//}
 
 function setCanvasSize() {
   canvasEl.width = window.innerWidth * 2;
@@ -35,7 +40,8 @@ function createParticule(x, y) {
   var p = {};
   p.x = x;
   p.y = y;
-  p.color = colors[anime.random(0, colors.length - 1)];
+  p.color = colors;
+  //p.color = colors[anime.random(0, colors.length - 1)];
   p.radius = anime.random(16, 32);
   p.endPos = setParticuleDirection(p);
   p.draw = function() {
@@ -104,24 +110,62 @@ function animateParticules(x, y) {
     });
 }
 
+//var cx; //circle x
+//var cy;
+//var cr;
+var inside; //inside circle
+
 var render = anime({
   duration: Infinity,
   update: function() {
     ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-    ctx.beginPath();
-    ctx.arc(300, 500, 50, 0, 2 * Math.PI);
-    ctx.fillStyle = '#FF1461';
-    ctx.fill();
+
+
+
+    for (var x of circle) {
+      ctx.beginPath();
+      ctx.arc(x.cx, x.cy, x.cr, 0, 2 * Math.PI);
+      ctx.fillStyle = x.color;
+      ctx.fill();
+    }
+
+
+
+
+    //inside = cc(cx,cy,cr);
   }
 });
 
 document.addEventListener(tap, function(e) {
-  window.human = true;
-  render.play();
-  updateCoords(e);
-  animateParticules(pointerX, pointerY);
-}, false);
+  //console.log("X: " + e.clientX);
+  //console.log("Y: " + e.clientY);
 
+
+  for (var x of circle) {
+    console.log(x.cx);
+    if (Math.sqrt(Math.pow(x.cx + 7 - e.clientX, 2) + Math.pow(x.cy + 7 - e.clientY, 2)) <= x.cr) {
+      //colors = x.color;
+      
+      
+      window.human = true;
+      render.play();
+      updateCoords(e);
+      animateParticules(pointerX, pointerY);
+    }
+  }
+
+}, false);
+/*
+function cc(e,x,y,r) {//checkCircle
+//console.log(Math.sqrt(Math.pow(x-pointerX,2)+Math.pow(y-pointerY,2)));
+
+//console.log("Y: "+pointerY);
+  if (Math.sqrt(Math.pow(x-pointerX,2)+Math.pow(y-pointerY,2))<r) {
+    return true;
+  }
+  return false;
+}
+*/
 var centerX = window.innerWidth / 2;
 var centerY = window.innerHeight / 2;
 
