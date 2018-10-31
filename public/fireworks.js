@@ -31,7 +31,7 @@ function setParticuleDirection(p) {
   }
 }
 
-function createParticule(x,y) {
+function createParticule(x, y) {
   var p = {};
   p.x = x;
   p.y = y;
@@ -47,7 +47,7 @@ function createParticule(x,y) {
   return p;
 }
 
-function createCircle(x,y) {
+function createCircle(x, y) {
   var p = {};
   p.x = x;
   p.y = y;
@@ -80,34 +80,38 @@ function animateParticules(x, y) {
     particules.push(createParticule(x, y));
   }
   anime.timeline().add({
-    targets: particules,
-    x: function(p) { return p.endPos.x; },
-    y: function(p) { return p.endPos.y; },
-    radius: 0.1,
-    duration: anime.random(1200, 1800),
-    easing: 'easeOutExpo',
-    update: renderParticule
-  })
+      targets: particules,
+      x: function(p) { return p.endPos.x; },
+      y: function(p) { return p.endPos.y; },
+      radius: 0.1,
+      duration: anime.random(1200, 1800),
+      easing: 'easeOutExpo',
+      update: renderParticule
+    })
     .add({
-    targets: circle,
-    radius: anime.random(80, 160),
-    lineWidth: 0,
-    alpha: {
-      value: 0,
-      easing: 'linear',
-      duration: anime.random(600, 800),  
-    },
-    duration: anime.random(1200, 1800),
-    easing: 'easeOutExpo',
-    update: renderParticule,
-    offset: 0
-  });
+      targets: circle,
+      radius: anime.random(80, 160),
+      lineWidth: 0,
+      alpha: {
+        value: 0,
+        easing: 'linear',
+        duration: anime.random(600, 800),
+      },
+      duration: anime.random(1200, 1800),
+      easing: 'easeOutExpo',
+      update: renderParticule,
+      offset: 0
+    });
 }
 
 var render = anime({
   duration: Infinity,
   update: function() {
     ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+    ctx.beginPath();
+    ctx.arc(300, 500, 50, 0, 2 * Math.PI);
+    ctx.fillStyle = '#FF1461';
+    ctx.fill();
   }
 });
 
