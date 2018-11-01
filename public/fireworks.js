@@ -9,10 +9,13 @@ var tap = ('ontouchstart' in window || navigator.msMaxTouchPoints) ? 'touchstart
 var colors = "#FF1461";
 const MAX = 300;
 const MIN = 30;
+const GROWTH = 3;
 
 var circle = [{ name: "Name", color: "#FF1461", cx: 50, cy: 50, cr: 100 }, { name: "Name", color: "#83D0E5", cx: 450, cy: 550, cr: 50 }];
 
-window.onload = function() {
+//window.onload = function() {
+
+function createPlayer() {
   for (var i = 0; i < 5; i++) {
     console.log(i);
     players[i] = {
@@ -35,13 +38,40 @@ socket.on('connect', function(data) {
 });
 
 var players = [];
+var self;
 
-socket.on('new-user', function(data) {
+/*socket.on('new-user', function(data) {
   // a user has been added, data = {username, color}
   console.log(data.username)
   players[data.username] = { color: data.color, cx: Math.floor(Math.random() * 100 + MAX), cy: Math.floor(Math.random() * 100 + MAX), cr: MIN, clicks: 0 };
 
+});*/
+socket.on('init', function(data) {
+  console.log(data);
+  self = {
+    color: data.color,
+    cx: Math.floor(Math.random() * 1500 + MAX),
+    cy: Math.floor(Math.random() * 700 + MAX),
+    cr: MIN,
+    clicks: 0
+  }
+});
 
+var players = []
+
+socket.on('new-user', function(data) {
+  // a user has been added, data = {username, color}
+  //console.log(data.username)
+  console.log("new user added");
+  console.log("name: "+data.username);
+  //var players = new Object();
+  players[data.username] = {
+    color: data.color,
+    cx: Math.floor(Math.random() * 1500 + MAX),
+    cy: Math.floor(Math.random() * 700 + MAX),
+    cr: MIN,
+    clicks: 0
+  }
 });
 
 socket.on('update-clicks', function(data) {
@@ -166,8 +196,10 @@ var render = anime({
   update: function() {
     ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
 
-
-
+    ctx.beginPath();
+    ctx.arc(self.cx, self.cy, self.cr, 0, 2 * Math.PI);
+    ctx.fillStyle = self.color;
+    ctx.fill()
     for (var x of players) {
       ctx.beginPath();
       ctx.arc(x.cx, x.cy, x.cr, 0, 2 * Math.PI);
@@ -186,18 +218,25 @@ document.addEventListener(tap, function(e) {
   //console.log("X: " + e.clientX);
   //console.log("Y: " + e.clientY);
 
+  if (Math.sqrt(Math.pow(self.cx - e.clientX, 2) + Math.pow(self.cy - e.clientY, 2)) <= self.cr) {
+    colors = self.color;
+    self.cr += GROWTH;
+    window.human = true;
+    render.play();
+    updateCoords(e);
+    animateParticules(pointerX, pointerY);
+  }
 
   for (var x of players) {
     console.log(x.cx);
+
     if (Math.sqrt(Math.pow(x.cx - e.clientX, 2) + Math.pow(x.cy - e.clientY, 2)) <= x.cr) {
       colors = x.color;
-      x.cr+=3;
-
+      x.cr -= GROWTH;
       window.human = true;
       render.play();
       updateCoords(e);
       animateParticules(pointerX, pointerY);
-
     }
   }
   socket.emit('click', "replace me with the clicked username")
