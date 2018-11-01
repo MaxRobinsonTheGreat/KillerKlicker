@@ -34,7 +34,7 @@ function createPlayer() {
 var socket = io.connect({ query: "username=" + Math.random() + "" });
 
 socket.on('connect', function(data) {
-  console.log("hello")
+  console.log("connected")
 });
 
 var players = [];
@@ -47,17 +47,27 @@ var self;
 
 });*/
 socket.on('init', function(data) {
-  console.log(data);
   self = {
+    name: data.self.username,
     color: data.self.color,
     cx: Math.floor(Math.random() * 1000 + MAX),
     cy: Math.floor(Math.random() * 500 + MAX),
     cr: MIN,
     clicks: 0
   }
+  for(var u of data.user_data){
+    if(u.username === self.name)
+      continue;
+    players[u.username] = {
+      color: u.color,
+      cx: Math.floor(Math.random() * 1500 + MAX),
+      cy: Math.floor(Math.random() * 500 + MAX),
+      cr: MIN,
+      clicks: u.clicks
+    }
+  }
+  // console.log(players);
 });
-
-var players = []
 
 socket.on('new-user', function(data) {
   // a user has been added, data = {username, color}
@@ -75,18 +85,24 @@ socket.on('new-user', function(data) {
 });
 
 socket.on('update-clicks', function(data) {
-  // a click has occured, data = {username, total clicks}
   console.log(data)
+  if(players[data.username] != undefined){
+    players[data.username].clicks = data.clicks;
+    console.log("yes")
+  }
+  else if(data.username == self.name){
+    console.log("no")
+    self.clicks = data.clicks;
+  }
 });
 
 socket.on('you-died', function() {
   // refresh the page
-  console.log(dead_user)
+  // console.log(dead_user)
 });
 
 socket.on('user-died', function(dead_user) {
-  // remove the player
-  console.log(dead_user)
+  delete players[dead_user]
 });
 
 function setCanvasSize() {
@@ -196,11 +212,14 @@ var render = anime({
   update: function() {
     ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
 
+    self.cr = self.clicks + 10;
     ctx.beginPath();
     ctx.arc(self.cx, self.cy, self.cr, 0, 2 * Math.PI);
     ctx.fillStyle = self.color;
     ctx.fill()
-    for (var x of players) {
+    for (var name in players) {
+      x = players[name]
+      x.cr = self.clicks + 10;
       ctx.beginPath();
       ctx.arc(x.cx, x.cy, x.cr, 0, 2 * Math.PI);
       ctx.fillStyle = x.color;
@@ -220,26 +239,29 @@ document.addEventListener(tap, function(e) {
 
   if (Math.sqrt(Math.pow(self.cx - e.clientX, 2) + Math.pow(self.cy - e.clientY, 2)) <= self.cr) {
     colors = self.color;
-    self.cr += GROWTH;
+    // self.cr += GROWTH;
+    // self.clicks ++;
     window.human = true;
     render.play();
     updateCoords(e);
     animateParticules(pointerX, pointerY);
+    socket.emit('click', self.name)
   }
 
-  for (var x of players) {
-    console.log(x.cx);
+  for (var name in players) {
+    x = players[name];
 
     if (Math.sqrt(Math.pow(x.cx - e.clientX, 2) + Math.pow(x.cy - e.clientY, 2)) <= x.cr) {
       colors = x.color;
-      x.cr -= GROWTH;
+      //x.cr -= GROWTH;
+      // x.clicks ++;
       window.human = true;
       render.play();
       updateCoords(e);
       animateParticules(pointerX, pointerY);
+      socket.emit('click', name)
     }
   }
-  socket.emit('click', "replace me with the clicked username")
 }, false);
 /*
 function cc(e,x,y,r) {//checkCircle

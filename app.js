@@ -34,6 +34,7 @@ io.on('connection', function(socket) {
   var handshakeData = socket.request;
   var username = handshakeData._query['username'];
   users[username] = {clicks: 0}
+  console.log(username + " joined the game")
   sockets[username] = socket;
   users[username].color = "rgb("+
     +((Math.random() * 150) +105)+","
@@ -53,10 +54,12 @@ io.on('connection', function(socket) {
   socket.broadcast.emit('new-user',{username, color});
   
   socket.on('click', function(clicked_user){
+    clicked_user+="";
+    console.log(clicked_user)
     if(clicked_user === username){
         var clicks = ++users[username].clicks;
     }
-    else if (clicked_user in users){
+    else if (users[clicked_user] != undefined){
         var clicks = --users[clicked_user].clicks;
         if(users[clicked_user].clicks < 0){
             sockets[clicked_user].disconnect();
