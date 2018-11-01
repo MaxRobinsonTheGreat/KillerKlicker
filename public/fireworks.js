@@ -49,9 +49,9 @@ var self;
 socket.on('init', function(data) {
   console.log(data);
   self = {
-    color: data.color,
-    cx: Math.floor(Math.random() * 1500 + MAX),
-    cy: Math.floor(Math.random() * 700 + MAX),
+    color: data.self.color,
+    cx: Math.floor(Math.random() * 1000 + MAX),
+    cy: Math.floor(Math.random() * 500 + MAX),
     cr: MIN,
     clicks: 0
   }
@@ -68,7 +68,7 @@ socket.on('new-user', function(data) {
   players[data.username] = {
     color: data.color,
     cx: Math.floor(Math.random() * 1500 + MAX),
-    cy: Math.floor(Math.random() * 700 + MAX),
+    cy: Math.floor(Math.random() * 500 + MAX),
     cr: MIN,
     clicks: 0
   }
