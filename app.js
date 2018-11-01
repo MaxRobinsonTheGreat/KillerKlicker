@@ -41,9 +41,15 @@ io.on('connection', function(socket) {
     +((Math.random() * 150) +105)+")";
   var color = users[username].color;
   
+  var user_data = []
+  for(var u in users){
+      var name = u
+      var col = users[u].color
+      var cl = users[u].clicks
+      user_data.push({username:name, color:col, clicks:cl});
+  }
   
-  console.log(username);
-  
+  socket.emit('init', {self:{username, color}, user_data});
   socket.broadcast.emit('new-user',{username, color});
   
   socket.on('click', function(clicked_user){

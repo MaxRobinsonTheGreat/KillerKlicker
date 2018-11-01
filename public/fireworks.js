@@ -10,13 +10,16 @@ var colors = ['#FF1461'];
 
 var socket = io.connect({ query: "username="+Math.random()+"" });
 
-socket.on('connect', function(data) {
-   console.log("hello")
+socket.on('init', function(data) {
+   console.log(data)
 });
+
+var players = []
 
 socket.on('new-user', function(data) {
   // a user has been added, data = {username, color}
    console.log(data.username)
+   players[data.username] = {}
 });
 
 socket.on('update-clicks', function(data) {
