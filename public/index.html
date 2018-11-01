@@ -3,6 +3,8 @@
 
 <head>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 
 </head>
 
@@ -25,13 +27,6 @@
     <script src="fireworks.js"></script>
 
     <script>
-        var canvasEl = document.querySelector('.fireworks');
-        var ctx = canvasEl.getContext('2d');
-        console.log("start drawing");
-        ctx.beginPath();
-        ctx.arc(100, 75, 50, 0, 2 * Math.PI);
-        ctx.fillStyle = 'green';
-        ctx.fill();
     </script>
 
 </body>

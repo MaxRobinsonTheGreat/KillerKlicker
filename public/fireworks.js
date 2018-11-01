@@ -7,11 +7,57 @@ var pointerX = 0;
 var pointerY = 0;
 var tap = ('ontouchstart' in window || navigator.msMaxTouchPoints) ? 'touchstart' : 'mousedown';
 var colors = "#FF1461";
+const MAX = 300;
+const MIN = 30;
 
 var circle = [{ name: "Name", color: "#FF1461", cx: 50, cy: 50, cr: 100 }, { name: "Name", color: "#83D0E5", cx: 450, cy: 550, cr: 50 }];
-//function createPlayer() {
 
-//}
+window.onload = function() {
+  for (var i = 0; i < 5; i++) {
+    console.log(i);
+    players[i] = {
+      color: "rgb(" +
+        ((Math.random() * 150) + 105) + "," +
+        ((Math.random() * 150) + 105) + "," +
+        ((Math.random() * 150) + 105) + ")",
+      cx: Math.floor(Math.random() * 1500 + MAX),
+      cy: Math.floor(Math.random() * 700 + MAX),
+      cr: MIN,
+      clicks: 0
+    };
+  }
+}
+
+var socket = io.connect({ query: "username=" + Math.random() + "" });
+
+socket.on('connect', function(data) {
+  console.log("hello")
+});
+
+var players = [];
+
+socket.on('new-user', function(data) {
+  // a user has been added, data = {username, color}
+  console.log(data.username)
+  players[data.username] = { color: data.color, cx: Math.floor(Math.random() * 100 + MAX), cy: Math.floor(Math.random() * 100 + MAX), cr: MIN, clicks: 0 };
+
+
+});
+
+socket.on('update-clicks', function(data) {
+  // a click has occured, data = {username, total clicks}
+  console.log(data)
+});
+
+socket.on('you-died', function() {
+  // refresh the page
+  console.log(dead_user)
+});
+
+socket.on('user-died', function(dead_user) {
+  // remove the player
+  console.log(dead_user)
+});
 
 function setCanvasSize() {
   canvasEl.width = window.innerWidth * 2;
@@ -122,7 +168,7 @@ var render = anime({
 
 
 
-    for (var x of circle) {
+    for (var x of players) {
       ctx.beginPath();
       ctx.arc(x.cx, x.cy, x.cr, 0, 2 * Math.PI);
       ctx.fillStyle = x.color;
@@ -141,19 +187,20 @@ document.addEventListener(tap, function(e) {
   //console.log("Y: " + e.clientY);
 
 
-  for (var x of circle) {
+  for (var x of players) {
     console.log(x.cx);
-    if (Math.sqrt(Math.pow(x.cx + 7 - e.clientX, 2) + Math.pow(x.cy + 7 - e.clientY, 2)) <= x.cr) {
-      //colors = x.color;
-      
-      
+    if (Math.sqrt(Math.pow(x.cx - e.clientX, 2) + Math.pow(x.cy - e.clientY, 2)) <= x.cr) {
+      colors = x.color;
+      x.cr+=3;
+
       window.human = true;
       render.play();
       updateCoords(e);
       animateParticules(pointerX, pointerY);
+
     }
   }
-
+  socket.emit('click', "replace me with the clicked username")
 }, false);
 /*
 function cc(e,x,y,r) {//checkCircle
