@@ -55,22 +55,24 @@ io.on('connection', function(socket) {
   
   socket.on('click', function(clicked_user){
     clicked_user+="";
-    console.log(clicked_user)
+    var user_to_change;
     if(clicked_user === username){
         var clicks = ++users[username].clicks;
     }
     else if (users[clicked_user] != undefined){
         var clicks = --users[clicked_user].clicks;
-        if(users[clicked_user].clicks < 0){
+        if(users[clicked_user].clicks < -5){
+            sockets[clicked_user].emit('you-died');
             sockets[clicked_user].disconnect();
         }
     }
     else{
         console.log("clicked nonexistant user")
+        return;
     }
     
-    var clicks = ++users[username].clicks;
-    socket.broadcast.emit('update-clicks',{username, clicks});
+    socket.emit('update-clicks', {username:clicked_user, clicks})
+    socket.broadcast.emit('update-clicks',{username:clicked_user, clicks});
   });
   
   socket.on('disconnect', function () {

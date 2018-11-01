@@ -23,8 +23,8 @@ function createPlayer() {
         ((Math.random() * 150) + 105) + "," +
         ((Math.random() * 150) + 105) + "," +
         ((Math.random() * 150) + 105) + ")",
-      cx: Math.floor(Math.random() * 1500 + MAX),
-      cy: Math.floor(Math.random() * 700 + MAX),
+      cx: Math.floor(Math.random() * 500),
+      cy: Math.floor(Math.random() * 500),
       cr: MIN,
       clicks: 0
     };
@@ -47,11 +47,12 @@ var self;
 
 });*/
 socket.on('init', function(data) {
+  console.log("init")
   self = {
     name: data.self.username,
     color: data.self.color,
-    cx: Math.floor(Math.random() * 1000 + MAX),
-    cy: Math.floor(Math.random() * 500 + MAX),
+    cx: Math.floor(Math.random() * 500),
+    cy: Math.floor(Math.random() * 500),
     cr: MIN,
     clicks: 0
   }
@@ -60,32 +61,29 @@ socket.on('init', function(data) {
       continue;
     players[u.username] = {
       color: u.color,
-      cx: Math.floor(Math.random() * 1500 + MAX),
-      cy: Math.floor(Math.random() * 500 + MAX),
+      cx: Math.floor(Math.random() * 500),
+      cy: Math.floor(Math.random() * 500),
       cr: MIN,
       clicks: u.clicks
     }
   }
-  // console.log(players);
+  console.log(JSON.stringify(players));
 });
 
 socket.on('new-user', function(data) {
-  // a user has been added, data = {username, color}
-  //console.log(data.username)
-  console.log("new user added");
-  console.log("name: "+data.username);
+  console.log("New user: "+data.username);
   //var players = new Object();
   players[data.username] = {
     color: data.color,
-    cx: Math.floor(Math.random() * 1500 + MAX),
-    cy: Math.floor(Math.random() * 500 + MAX),
+    cx: Math.floor(Math.random() * 500),
+    cy: Math.floor(Math.random() * 500),
     cr: MIN,
     clicks: 0
   }
 });
 
 socket.on('update-clicks', function(data) {
-  console.log(data)
+  console.log("Click");
   if(players[data.username] != undefined){
     players[data.username].clicks = data.clicks;
     console.log("yes")
@@ -97,11 +95,12 @@ socket.on('update-clicks', function(data) {
 });
 
 socket.on('you-died', function() {
-  // refresh the page
-  // console.log(dead_user)
+  console.log("you died")
+  location.reload();
 });
 
 socket.on('user-died', function(dead_user) {
+  console.log("User died: " + dead_user);
   delete players[dead_user]
 });
 
@@ -219,7 +218,7 @@ var render = anime({
     ctx.fill()
     for (var name in players) {
       x = players[name]
-      x.cr = self.clicks + 10;
+      x.cr = x.clicks + 10;
       ctx.beginPath();
       ctx.arc(x.cx, x.cy, x.cr, 0, 2 * Math.PI);
       ctx.fillStyle = x.color;
