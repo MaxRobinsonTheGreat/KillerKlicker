@@ -5,6 +5,7 @@ body {
   max-height:100%;
   overflow-x: hidden;
   overflow-y: hidden;
+  background: #383a3d;
 }
 
 ::-webkit-scrollbar { 

@@ -18,7 +18,7 @@ var sockets = [];
 
 // -- ROUTING --
 app.get('/', function(req, res, next) {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/public/start.html');
 });
 
 app.get('/click', function(req, res, next) {

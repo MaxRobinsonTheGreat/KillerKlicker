@@ -213,9 +213,19 @@ var render = anime({
 
     self.cr = self.clicks + 10;
     ctx.beginPath();
+    ctx.arc(self.cx, self.cy, self.cr+6, 0, 2 * Math.PI);
+    ctx.fillStyle = self.color;
+    ctx.fill()
+    ctx.beginPath();
+    ctx.arc(self.cx, self.cy, self.cr+3, 0, 2 * Math.PI);
+    ctx.fillStyle = "rgb(56,58,61)";
+    ctx.fill()
+    ctx.beginPath();
     ctx.arc(self.cx, self.cy, self.cr, 0, 2 * Math.PI);
     ctx.fillStyle = self.color;
     ctx.fill()
+    
+    
     for (var name in players) {
       x = players[name]
       x.cr = x.clicks + 10;

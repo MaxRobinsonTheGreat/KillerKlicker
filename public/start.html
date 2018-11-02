@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- include our dependency on angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
+    <script src="avatar.js"></script>
+    <link rel="stylesheet" type="text/css" href="start.css">
+    <meta charset="utf-8">
+    <title>Killer Klicker!</title>
+</head>
+
+
+<body onload="starting()">
+</body>
+<br><br>
+<h1 id="q1">Killer Klicker</h1>
+<h2 id="q2">Welcome to Killer Klicker!</h2>
+<h2 id="q3">You are the circle with the ring!</h2>
+<h2 id="q4">Klick it to expand!</h2>
+<h2 id="q5">Compete with others in the same page!</h2>
+<h2 id="q6">Shrink and kill them by klicking their circles!</h2><br>
+<form action="./game.html">
+<button type='submit' id="q7">Klick to begin</button>
+</form>
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Muli:400');
+    @font-face {
+        font-family: MontserratB;
+        src: url("fonts/Montserrat-Bold.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: MontserratL;
+        src: url("fonts/Montserrat-Light.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: MontserratEL;
+        src: url("fonts/Montserrat-Thin.otf") format("opentype");
+    }
+
+    html,
+    body {
+        margin: 0;
+        max-width: 100%;
+        max-height: 100%;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        background: #383a3d;
+        color: white;
+        font-family: MontserratB;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 5vw;
+    }
+
+    h2 {
+        font-family: MontserratEL;
+        color: white;
+        font-size: 1.6vw;
+        transition: all 0.3s;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    button {
+        background-color: #383a3d;
+        border: 2px solid white;
+        border-radius: 10em;
+        color: white;
+        cursor: pointer;
+        margin-top: 1vw;
+        padding: 0.6em 0.9em;
+        text-transform: uppercase;
+        transition: 0.2s;
+        text-align: center;
+        font-size: 1vw;
+        font-family: MontserratL;
+        margin-bottom: 2vw
+    }
+
+    button:hover {
+        background-color: white;
+        color: #333333;
+        outline: 0;
+        font-size: 1.3vw;
+        transform: translateY(-0.2em);
+    }
+
+    button:focus {
+        outline: 0;
+    }
+    
+    #q1,#q2,#q3,#q4,#q5,#q6,#q7 {
+        opacity:0;
+        transition:0.3s;
+    }
+</style>
+
+
+<script>
+function starting() {
+        var x = 0;
+        setTimeout(function() {
+            document.getElementById("q1").style.opacity = 1;
+        }, x * 1);
+        setTimeout(function() {
+            document.getElementById("q2").style.opacity = 1;
+        }, x * 2);
+        setTimeout(function() {
+            document.getElementById("q3").style.opacity = 1;
+        }, x * 3);
+        setTimeout(function() {
+            document.getElementById("q4").style.opacity = 1;
+        }, x * 4);
+        setTimeout(function() {
+            document.getElementById("q5").style.opacity = 1;
+        }, x * 5);
+        setTimeout(function() {
+            document.getElementById("q6").style.opacity = 1;
+        }, x * 6);
+        setTimeout(function() {
+            document.getElementById("q7").style.opacity = 1;
+        }, x * 7+30);
+    }
+
+
+
+
+</script>
+
+
+</html>
