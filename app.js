@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, { wsEngine: 'ws' });
+const MAX_CLICKS = 200;
 
 app.use(express.static(__dirname + '/node_modules')); // makes node_modules folder publicly accessible
 app.use(express.static(__dirname + '/public')); //
@@ -41,23 +42,36 @@ io.on('connection', function(socket) {
     +((Math.random() * 150) +105)+","
     +((Math.random() * 150) +105)+")";
   var color = users[username].color;
+  var x_ratio = (Math.random());
+  var y_ratio = (Math.random());
+  users[username].x_ratio = x_ratio;
+  users[username].y_ratio = y_ratio;
   
   var user_data = []
   for(var u in users){
       var name = u
       var col = users[u].color
       var cl = users[u].clicks
-      user_data.push({username:name, color:col, clicks:cl});
+      var x_ratio = users[u].x_ratio
+      var y_ratio = users[u].y_ratio
+      user_data.push({username:name, color:col, clicks:cl, x_ratio, y_ratio});
   }
   
-  socket.emit('init', {self:{username, color}, user_data});
-  socket.broadcast.emit('new-user',{username, color});
+  socket.emit('init', {self:{username, color, x_ratio, y_ratio}, user_data});
+  socket.broadcast.emit('new-user',{username, color, x_ratio, y_ratio});
   
   socket.on('click', function(clicked_user){
+    if(users[username] == undefined) return;
     clicked_user+="";
     var user_to_change;
     if(clicked_user === username){
         var clicks = ++users[username].clicks;
+        if(clicks > MAX_CLICKS){
+            socket.emit('win')
+            socket.broadcast.emit('lose');
+            resetGame();
+            return
+        }
     }
     else if (users[clicked_user] != undefined){
         var clicks = --users[clicked_user].clicks;
@@ -84,3 +98,11 @@ io.on('connection', function(socket) {
   });
   
 });
+
+function resetGame(){
+    users = [];
+    for (var s of sockets){
+        s.disconnect();
+    }
+    sockets = []; 
+}

@@ -15,22 +15,6 @@ var circle = [{ name: "Name", color: "#FF1461", cx: 50, cy: 50, cr: 100 }, { nam
 
 //window.onload = function() {
 
-function createPlayer() {
-  for (var i = 0; i < 5; i++) {
-    console.log(i);
-    players[i] = {
-      color: "rgb(" +
-        ((Math.random() * 150) + 105) + "," +
-        ((Math.random() * 150) + 105) + "," +
-        ((Math.random() * 150) + 105) + ")",
-      cx: Math.floor(Math.random() * 500),
-      cy: Math.floor(Math.random() * 500),
-      cr: MIN,
-      clicks: 0
-    };
-  }
-}
-
 var socket = io.connect({ query: "username=" + Math.random() + "" });
 
 socket.on('connect', function(data) {
@@ -48,21 +32,23 @@ var self;
 });*/
 socket.on('init', function(data) {
   console.log("init")
+  
   self = {
     name: data.self.username,
     color: data.self.color,
-    cx: Math.floor(Math.random() * 500),
-    cy: Math.floor(Math.random() * 500),
+    cx: document.documentElement.clientWidth * data.self.x_ratio,
+    cy: document.documentElement.clientHeight * data.self.y_ratio,
     cr: MIN,
     clicks: 0
   }
+  console.log(self.cx);
   for(var u of data.user_data){
     if(u.username === self.name)
       continue;
     players[u.username] = {
       color: u.color,
-      cx: Math.floor(Math.random() * 500),
-      cy: Math.floor(Math.random() * 500),
+      cx: document.documentElement.clientWidth * u.x_ratio,
+      cy: document.documentElement.clientHeight * u.y_ratio,
       cr: MIN,
       clicks: u.clicks
     }
@@ -75,8 +61,8 @@ socket.on('new-user', function(data) {
   //var players = new Object();
   players[data.username] = {
     color: data.color,
-    cx: Math.floor(Math.random() * 500),
-    cy: Math.floor(Math.random() * 500),
+    cx: document.documentElement.clientWidth * data.x_ratio,
+    cy: document.documentElement.clientHeight * data.y_ratio,
     cr: MIN,
     clicks: 0
   }
@@ -96,12 +82,21 @@ socket.on('update-clicks', function(data) {
 
 socket.on('you-died', function() {
   console.log("you died")
+  alert("You died! Press F5 to restart")
   location.reload();
 });
 
 socket.on('user-died', function(dead_user) {
   console.log("User died: " + dead_user);
   delete players[dead_user]
+});
+
+socket.on('win', function(){
+  alert("You win! Press F5 to restart");
+});
+
+socket.on('lose', function(){
+  alert("You lost! Someone else grew too big. Press F5 to restart.");
 });
 
 function setCanvasSize() {
