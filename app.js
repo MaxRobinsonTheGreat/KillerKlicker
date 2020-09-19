@@ -26,7 +26,7 @@ app.get('/click', function(req, res, next) {
     res.send("hello");
 });
 
-server.listen(8082);
+server.listen(8080);
 console.log("Server is listening...")
 
 io.on('connection', function(socket) {
@@ -46,7 +46,7 @@ io.on('connection', function(socket) {
   var y_ratio = (Math.random()*0.8)+0.1;
   users[username].x_ratio = x_ratio;
   users[username].y_ratio = y_ratio;
-  
+
   var user_data = []
   for(var u in users){
       var name = u
@@ -56,10 +56,10 @@ io.on('connection', function(socket) {
       var y_ratio = users[u].y_ratio
       user_data.push({username:name, color:col, clicks:cl, x_ratio, y_ratio});
   }
-  
+
   socket.emit('init', {self:{username, color, x_ratio, y_ratio}, user_data});
   socket.broadcast.emit('new-user',{username, color, x_ratio, y_ratio});
-  
+
   socket.on('click', function(clicked_user){
     if(users[username] == undefined) return;
     clicked_user+="";
@@ -84,11 +84,11 @@ io.on('connection', function(socket) {
         console.log("clicked nonexistant user")
         return;
     }
-    
+
     socket.emit('update-clicks', {username:clicked_user, clicks})
     socket.broadcast.emit('update-clicks',{username:clicked_user, clicks});
   });
-  
+
   socket.on('disconnect', function () {
     console.log(username + " disconnected")
     delete users[username]
@@ -96,7 +96,7 @@ io.on('connection', function(socket) {
     socket.emit('you-died');
     socket.broadcast.emit('user-died',username);
   });
-  
+
 });
 
 function resetGame(){
@@ -104,5 +104,5 @@ function resetGame(){
     for (var s of sockets){
         s.disconnect();
     }
-    sockets = []; 
+    sockets = [];
 }
