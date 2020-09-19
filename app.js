@@ -26,7 +26,7 @@ app.get('/click', function(req, res, next) {
     res.send("hello");
 });
 
-server.listen(8080);
+server.listen(8082);
 console.log("Server is listening...")
 
 io.on('connection', function(socket) {
@@ -42,8 +42,8 @@ io.on('connection', function(socket) {
     +((Math.random() * 150) +105)+","
     +((Math.random() * 150) +105)+")";
   var color = users[username].color;
-  var x_ratio = (Math.random());
-  var y_ratio = (Math.random());
+  var x_ratio = (Math.random()*0.8)+0.1;
+  var y_ratio = (Math.random()*0.8)+0.1;
   users[username].x_ratio = x_ratio;
   users[username].y_ratio = y_ratio;
   

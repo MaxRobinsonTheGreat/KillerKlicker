@@ -197,6 +197,18 @@ var render = anime({
   duration: Infinity,
   update: function() {
     ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+    
+    
+    for (var name in players) {
+      x = players[name]
+      x.cr = x.clicks + 10;
+      ctx.beginPath();
+      ctx.arc(x.cx, x.cy, x.cr, 0, 2 * Math.PI);
+      ctx.fillStyle = x.color;
+      ctx.fill();
+    }
+    
+    
     var tempColor = self.color;
     if (hurt) {
       tempColor = "red";
@@ -215,21 +227,6 @@ var render = anime({
     ctx.arc(self.cx, self.cy, self.cr, 0, 2 * Math.PI);
     ctx.fillStyle = tempColor;
     ctx.fill()
-
-
-    for (var name in players) {
-      x = players[name]
-      x.cr = x.clicks + 10;
-      ctx.beginPath();
-      ctx.arc(x.cx, x.cy, x.cr, 0, 2 * Math.PI);
-      ctx.fillStyle = x.color;
-      ctx.fill();
-    }
-
-
-
-
-    //inside = cc(cx,cy,cr);
   }
 });
 
